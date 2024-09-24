@@ -40,15 +40,16 @@ def health_check():
 
 
 # Run Flask in a separate thread
-def run_flask():
-    app.run(port=5000)
 
-# Start Flask server in a new thread
-threading.Thread(target=run_flask).start()
 
 # Basic bot command
 @bot.event
 async def on_ready():
     print(f'Bot is ready. Logged in as {bot.user}')
 
-bot.run(DISCORD_TOKEN)
+def run_bot():
+    bot.run(DISCORD_TOKEN)
+    
+# Start Flask server in a new thread
+threading.Thread(target=run_bot).start()
+
