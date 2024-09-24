@@ -10,5 +10,5 @@ RUN apt-get -y install libpq-dev gcc
 RUN pip3 install -r requirements.txt
 ENTRYPOINT ["./gunicorn.sh"]
 
-# Port is supplied by heroku
+# Port is supplied by heroku 
 EXPOSE $PORT
