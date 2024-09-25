@@ -17,6 +17,7 @@ app = Flask(__name__)
 
 
 def send_msg(payload):
+    payload = {"content":str(payload)}
     res = requests.post(WEBHOOK_URL, json = payload)
     return res.text, res.status_code
     
