@@ -1,55 +1,43 @@
 import discord
+from discord import client 
 from discord.ext import commands
 from flask import Flask, request, jsonify
 import threading
 import os
 from dotenv import load_dotenv, find_dotenv
+import asyncio
+import requests
+import logging
 
 # Load environment variables from .env file
 load_dotenv(find_dotenv())
 
-DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-
-# Discord bot setup
-intents = discord.Intents.default()
-bot = commands.Bot(command_prefix="!", intents=intents)
-
-# Create a Flask app
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 app = Flask(__name__)
 
-# Endpoint to accept HTTP POST requests
-@app.route('/notify', methods=['POST'])
-def notify():
-    data = request.json
-    if not data or 'channel_id' not in data or 'message' not in data:
-        return jsonify({'error': 'Invalid payload'}), 400
 
-    channel_id = int(data['channel_id'])
-    message = data['message']
-
-    channel = bot.get_channel(channel_id)
-    if channel:
-        asyncio.run_coroutine_threadsafe(channel.send(message), bot.loop)
-        return jsonify({'status': 'Message sent'}), 200
-    else:
-        return jsonify({'error': 'Channel not found'}), 404
-
+def send_msg(payload):
+    res = requests.post(WEBHOOK_URL, json = payload)
+    return res.text, res.status_code
+    
 @app.route('/', methods=['GET'])
 def health_check():
     return "Hello", 200
 
+@app.route('/event', methods=['POST'])
+def handle_event():
+    print(request.json)
+    t, c = send_msg(dict(request.json))
+    return t, c
 
-# Run Flask in a separate thread
 
-
-# Basic bot command
-@bot.event
-async def on_ready():
-    print(f'Bot is ready. Logged in as {bot.user}')
-
-def run_bot():
-    bot.run(DISCORD_TOKEN)
-    
-# Start Flask server in a new thread
-threading.Thread(target=run_bot).start()
+if __name__ == '__main__':
+    # loop = asyncio.new_event_loop()
+    # loop.create_task(run_bot())
+    # asyncio.set_event_loop(loop)
+    app.run(host="0.0.0.0")
+else:
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
 
