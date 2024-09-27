@@ -1,11 +1,6 @@
-import discord
-from discord import client 
-from discord.ext import commands
 from flask import Flask, request, jsonify
-import threading
 import os
 from dotenv import load_dotenv, find_dotenv
-import asyncio
 import requests
 import logging
 
