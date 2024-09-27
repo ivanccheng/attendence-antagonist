@@ -1,0 +1,28 @@
+{
+	"info": {
+		"_postman_id": "90006148-d8ba-4bb4-9585-4b37876ebc02",
+		"name": "attendence-att",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30265863"
+	},
+	"item": [
+		{
+			"name": "Send Msg",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sheetName\": \"Fall Attendance\",\r\n    \"cell\": \"AG11\",\r\n    \"newValue\": \"\",\r\n    \"bg\": \"#f4cccc\",\r\n    \"type_change\": \"EDIT\",\r\n    \"type\": \"6:00pm-7:30pm \\nWarrior Zone\",\r\n    \"practice_date\": \"2024-10-02T04:00:00.000Z\",\r\n    \"date_changed\": \"09-27T09:23Z\",\r\n    \"person\": \"Test User\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:5000/event"
+			},
+			"response": []
+		}
+	]
+}
