@@ -23,8 +23,11 @@ def health_check():
 @app.route('/event', methods=['POST'])
 def handle_event():
     print(request.json)
-    t, c = send_msg(dict(request.json))
-    return t, c
+    data = request.json
+    
+    for d in data:
+        t, c = send_msg(dict(d))
+    return "Success", 204
 
 
 if __name__ == '__main__':
