@@ -4,6 +4,7 @@ from dotenv import load_dotenv, find_dotenv
 import requests
 import logging
 from collections import defaultdict
+from datetime import datetime
 
 # Load environment variables from .env file
 load_dotenv(find_dotenv())
@@ -27,56 +28,88 @@ def create_messages(msg_array):
 
 # def format_message(msg):
 
+def format_field(data):
+    now = datetime.now().strftime('%Y-%m-%d %H:%M') 
+    prac_date = datetime.strptime(data, '%Y-%m-%dT%H:%M:%S.%fZ')
+    
+    return [
+        {
+        "name": "Practice Changed",
+        "value": "",
+        "inline": True
+        },
+        {
+        "name": f"{now}",
+        "value": "",
+        "inline": True
+        },
+        {
+        "name": "Time until Practice",
+        "value": "",
+        "inline": True
+        },
+        {
+        "name": "",
+        "value": ""
+        }]
+
 ###
 {'Test User': [{'sheetName': 'Fall Attendance', 'cell': 'AG11', 'newValue': '', 'bg': '#f4cccc', 'type_change': 'EDIT', 'type': '6:00pm-7:30pm \nWarrior Zone', 'practice_date': '2024-10-02T04:00:00.000Z', 'date_changed': '09-27T09:23Z', 'person': 'Test User'}]}
 ###
-def format_message(dict):
+def format_message(m_entry):
+    print("sdklfgjdfkl")
+    person = m_entry[0]
+    data = m_entry[1]
+    
+    [{} for d in data]
     
     payload = {
-        "username": "Webhook",
+        "username": "KIMMER ANGY",
         "avatar_url": "https://cdn.discordapp.com/attachments/1076630577035354213/1223466186876915772/image.png?ex=6712776d&is=671125ed&hm=0e87a380be66b8de4e277ef2e10d8585cbb4609157aafed437dffdc9cd6d91b6&",
         "content": "Text message. Up to 2000 characters.",
         "embeds": [
             {
-            "author": {
-                "name": "Birdie♫",
-                "url": "https://www.reddit.com/r/cats/",
-                "icon_url": "https://i.imgur.com/R66g1Pe.jpg"
-            },
-            "title": "Title",
-            "url": "https://google.com/",
-            "description": "Text message. You can use Markdown here. *Italic* **bold** __underline__ ~~strikeout~~ [hyperlink](https://google.com) `code`",
-            "color": 15258703,
-            "fields": [
-                {
-                "name": "Text",
-                "value": "More text",
-                "inline": True
+                "author": {
+                    "name": f"{person}",
+                    "url": "https://www.reddit.com/r/cats/",
+                    "icon_url": "https://i.imgur.com/R66g1Pe.jpg"
                 },
-                {
-                "name": "Even more text",
-                "value": "Yup",
-                "inline": True
+                # "title": f"{person} made changes",
+                # "url": "https://google.com/",
+                # "description": "Text message. You can use Markdown here. *Italic* **bold** __underline__ ~~strikeout~~ [hyperlink](https://google.com) `code`",
+                # "color": 15258703,
+                "fields": [
+                    {
+                    "name": "Practice Changed",
+                    "value": "",
+                    "inline": True
+                    },
+                    {
+                    "name": "Date Changed",
+                    "value": "",
+                    "inline": True
+                    },
+                    {
+                    "name": "Time until Practice",
+                    "value": "",
+                    "inline": True
+                    },
+                    {
+                    "name": "",
+                    "value": ""
+                    },
+
+                ],
+                "thumbnail": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/3/38/4-Nature-Wallpapers-2014-1_ukaavUI.jpg"
                 },
-                {
-                "name": "Use `\"inline\": true` parameter, if you want to display fields in the same line.",
-                "value": "okay..."
+                "image": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/A_picture_from_China_every_day_108.jpg"
                 },
-                {
-                "name": "Thanks!",
-                "value": "You're welcome :wink:"
+                "footer": {
+                    "text": "Woah! So cool! :smirk:",
+                    "icon_url": "https://i.imgur.com/fKL31aD.jpg"
                 }
-            ],
-            "thumbnail": {
-                "url": "https://upload.wikimedia.org/wikipedia/commons/3/38/4-Nature-Wallpapers-2014-1_ukaavUI.jpg"
-            },
-            "image": {
-                "url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/A_picture_from_China_every_day_108.jpg"
-            },
-            "footer": {
-                "text": "Woah! So cool! :smirk:",
-                "icon_url": "https://i.imgur.com/fKL31aD.jpg"
-            }
             }
         ]
     }
@@ -98,14 +131,15 @@ def health_check():
 def handle_event():
     # print(request.json)
     data = request.json
-    create_messages(data)
-    # print(create_messages(data))
-    # return dict(create_messages(data)), 200
+
+    message_dict = create_messages(data)
+    for k,v in message_dict.items():
+        send_payload(format_message((k,v)))
+
+    # send_payload(format_message())
     
-    send_payload(format_message())
-    
-    for d in data:
-        t, c = send_msg(dict(d))
+    # for d in data:
+    #     t, c = send_msg(dict(d))
     return "Success", 204
 
 
